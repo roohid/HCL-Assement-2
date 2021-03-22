@@ -1,0 +1,197 @@
+<app-header></app-header>
+<div class="container">
+    <div fxLayoutAlign="center center" class="mt-4">
+        <!-- Create Button for Contact Info -->
+        <button mat-mini-fab (click)="createBtn()" color="warn" class="mr-1">
+            <mat-icon>add</mat-icon>
+        </button>
+        <!-- List Button for Contact Info -->
+        <button mat-mini-fab (click)="viewBtn()" color="warn">
+            <mat-icon>view_array</mat-icon>
+        </button>
+    </div>
+    <div class="row">
+        <div class="col mt-4">
+            <div class="card shadow border-0">
+                <div class="card-header bg-transparent">
+                    <h3 class="mb-0">
+                        Contact Info </h3>
+                </div>
+                <div class="card-body">
+                    <mat-tab-group>
+                        <!-- Create Contact Info Tab -->
+                        <mat-tab label="Create Contact Info" *ngIf="ifCreated">
+                            <div class="card">
+                                <div class="card-body">
+                                    <form class="mat-form">
+                                        <div class="row">
+                                            <div class="col-md-6 col-6">
+                                                <mat-form-field class="example-full-width" appearance="outline">
+                                                    <mat-label>Name</mat-label>
+                                                    <input matInput [(ngModel)]="name" name="name">
+                                                </mat-form-field>
+                                            </div>
+                                            <div class="col-md-6 col-6">
+                                                <mat-form-field class="example-full-width" appearance="outline">
+                                                    <mat-label>Email</mat-label>
+                                                    <input matInput [(ngModel)]="email" type="email" name="email">
+                                                </mat-form-field>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6 col-6">
+                                                <mat-form-field class="example-full-width" appearance="outline">
+                                                    <mat-label>Mobile Number</mat-label>
+                                                    <input matInput [(ngModel)]="mobileNumber" type="number"
+                                                        name="mobileNumber">
+                                                </mat-form-field>
+                                            </div>
+                                            <div class="col-md-6 col-6">
+                                                <mat-form-field class="example-full-width" appearance="outline">
+                                                    <mat-label>Select Gender</mat-label>
+                                                    <mat-select name="selectedGender" [(ngModel)]="selectedGender">
+                                                        <mat-option *ngFor="let item of genderList" [value]="item">
+                                                            {{item}}
+                                                        </mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12 col-12">
+                                                <mat-form-field class="example-full-width" appearance="outline">
+                                                    <mat-label>Address</mat-label>
+                                                    <textarea cols="4" matInput placeholder="Address"
+                                                        [(ngModel)]="address" name="address"></textarea>
+                                                </mat-form-field>
+                                            </div>
+                                        </div>
+                                    </form>
+                                    <div class="mt-2" fxLayoutAlign="center center">
+                                        <button class="btn btn-icon  btn-primary" mat-button [disabled]="buttonDisable"
+                                            type="button" (click)="save()">
+                                            <mat-icon matSuffix>save</mat-icon>
+                                            Save
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </mat-tab>
+
+                        <!-- View Contact Info Tab -->
+                        <mat-tab label="View Contact Info" *ngIf="ifEdited">
+                            <div class="card">
+                                <div class="card-body" flexLayoutAlign="center center">
+                                    <div class="row">
+                                        <div class="col-sm-4 pull-left" flexLayoutAlign="center center">
+                                            <label>Name</label>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <label>:&nbsp; {{viewContactInfo?.name}}</label>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-4 pull-left" flexLayoutAlign="center center">
+                                            <label>Email</label>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <label>:&nbsp; {{viewContactInfo?.email}}</label>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-4 pull-left" flexLayoutAlign="center center">
+                                            <label>Mobile Number</label>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <label>:&nbsp; {{viewContactInfo?.mobile}}</label>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-sm-4 pull-left" flexLayoutAlign="center center">
+                                            <label>Gender</label>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <label>:&nbsp; {{viewContactInfo?.gender}}</label>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-4 pull-left" flexLayoutAlign="center center">
+                                            <label>Address</label>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <label>:&nbsp; {{viewContactInfo?.address}}</label>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </mat-tab>
+                        <!-- Contact Info List Tab -->
+                        <mat-tab label="Contact Info List" *ngIf="ifViewed">
+                            <div class="card">
+                                <div class="card-body" flexLayoutAlign="center center">
+                                    <div>
+                                        <!-- Filter input Field -->
+                                        <div fxLayout="row" fxLayoutAlign="end start" class="float-md-right">
+                                            <mat-form-field>
+                                                <mat-label>Filter</mat-label>
+                                                <input matInput (keyup)="applyFilter($event)" placeholder="Search"
+                                                    #input>
+                                            </mat-form-field>
+                                        </div>
+                                        <table mat-table [dataSource]="contactInfoData">
+
+                                            <!-- Sl Column -->
+                                            <ng-container matColumnDef="id">
+                                                <th mat-header-cell *matHeaderCellDef> Sl No </th>
+                                                <td mat-cell *matCellDef="let row; let i = index;"> {{i+1}}</td>
+                                            </ng-container>
+
+                                            <!-- Name Column -->
+                                            <ng-container matColumnDef="name">
+                                                <th mat-header-cell *matHeaderCellDef color="primary">Name </th>
+                                                <td mat-cell *matCellDef="let row"> {{row.name}} </td>
+                                            </ng-container>
+
+                                            <!-- Email Column -->
+                                            <ng-container matColumnDef="email">
+                                                <th mat-header-cell *matHeaderCellDef color="primary">Email </th>
+                                                <td mat-cell *matCellDef="let row"> {{row.email}} </td>
+                                            </ng-container>
+
+                                            <!-- Mobile Column -->
+                                            <ng-container matColumnDef="mobileNumber">
+                                                <th mat-header-cell *matHeaderCellDef color="primary">Mobile Number
+                                                </th>
+                                                <td mat-cell *matCellDef="let row"> {{row.mobile}} </td>
+                                            </ng-container>
+
+                                            <!-- Action Column -->
+                                            <ng-container matColumnDef="action">
+                                                <th mat-header-cell *matHeaderCellDef>Action </th>
+                                                <td mat-cell *matCellDef="let row">
+                                                    <div class="row">
+                                                        <div class="card-profile-actions py-4 mt-lg-0">
+                                                            <button type="button" class="btn btn-sm btn-warning  mr-2"
+                                                                (click)="editContactInfo(row)">
+                                                                <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                                                                &nbsp;View</button>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </ng-container>
+                                            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                                            <tr mat-row *matRowDef="let row; columns: displayedColumns;">
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </mat-tab>
+                    </mat-tab-group>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

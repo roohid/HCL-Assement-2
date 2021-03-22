@@ -1,0 +1,10 @@
+<div style="background-color: #092756;">
+    <div class="login">
+        <h1>Login</h1>
+        <form [formGroup]="loginForm" (ngSubmit)="login()">
+            <input type="text" name="u" placeholder="Username" name="userName" formControlName="username" />
+            <input type="password" name="p" placeholder="Password" name="password" formControlName="password" />
+            <button type="submit" class="btn btn-primary btn-block btn-large">Sign In</button>
+        </form>
+    </div>
+</div>
